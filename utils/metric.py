@@ -157,6 +157,8 @@ class Confusion(object):
         if column_labels is None:
             column_labels = [str(i) for i in range(self.k)]
         
+        print("inside show_sns")
+
         plt.figure(figsize=(fig_width, fig_height))
         sns.heatmap(conf, annot=True, fmt="d", cmap="Blues",
                     xticklabels=column_labels, yticklabels=row_labels)
