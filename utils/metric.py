@@ -146,7 +146,7 @@ class Confusion(object):
                 print(("%"+str(width)+".d")%conf[i,j],end='')
             print('')
         
-    def show_sns(self, fig_width, fig_height, row_labels=None, column_labels=None):
+    def show_sns(self, dataset_path, fig_width, fig_height, row_labels=None, column_labels=None):
         """
         Display the confusion matrix using Seaborn's heatmap.
         """
@@ -165,7 +165,9 @@ class Confusion(object):
         plt.xlabel("Predicted Label")
         plt.ylabel("True Label")
         plt.title("Confusion Matrix")
-        plt.show()
+        # plt.show()
+        # instead of showing the figure we save it to a file in reslts folder named as {dataset}_confusion_matrix.png
+        plt.savefig("/results/" + dataset_path + "_confusion_matrix.png")
 
     def conf2label(self):
         conf=self.conf
