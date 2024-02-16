@@ -5,6 +5,7 @@ from scipy.optimize import linear_sum_assignment as hungarian
 from sklearn.metrics.cluster import normalized_mutual_info_score, adjusted_rand_score, adjusted_mutual_info_score
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -167,6 +168,10 @@ class Confusion(object):
         plt.title("Confusion Matrix")
         # plt.show()
         # instead of showing the figure we save it to a file in reslts folder named as {dataset}_confusion_matrix.png
+          # Check if the directory exists and create it if it does not
+        if not os.path.exists('/results/'):
+            os.makedirs('/results/'
+        
         plt.savefig("/results/" + dataset_path + "_confusion_matrix.png")
 
     def conf2label(self):
