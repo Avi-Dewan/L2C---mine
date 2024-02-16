@@ -16,6 +16,9 @@ from utils.metric import Confusion, Timer, AverageMeter
 from modules.pairwise import Class2Simi
 import modules.criterion
 
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
 
 def prepare_task_target(input, target, args):
     # Prepare the target for different criterion/tasks
@@ -25,6 +28,27 @@ def prepare_task_target(input, target, args):
         if args.use_SPN:  # For unsupervised clustering
             # Feed the input to SPN to get predictions
             _, train_target = args.SPN(input).max(1)  # Binaries the predictions
+
+            print("input shape: ", input.shape)
+            
+            tsne_output = args.SPN.features(input)
+            print("features shape: ", tsne_output.shape)
+            
+            tsne_output_flat = tsne_output.view(tsne_output.shape[0], -1)
+            
+            print("features flatted shape: ", tsne_output_flat.shape)
+            
+            tsne_model = TSNE(n_components=2, random_state=0)
+            tsne_data = tsne_model.fit_transform(tsne_output_flat.detach().cpu().numpy())
+
+            plt.figure(figsize=(10, 6))
+            plt.scatter(tsne_data[:, 0], tsne_data[:, 1])
+            plt.title('t-SNE plot of the output')
+
+            if not os.path.exists('tsne_output'):
+                os.makedirs('tsne_output')
+            plt.savefig('tsne_output/tsne.png')
+
             train_target = train_target.float()
             train_target[train_target==0] = -1  # Simi:1, Dissimi:-1
         else:  # For supervised clustering
@@ -72,6 +96,8 @@ def train(epoch, train_loader, learner, args):
         # Optimization
         loss, output  = learner.learn(input, train_target)
 
+        if(args.loss in ['KCL', 'CCL']):
+            break
         # Update the performance meter
         confusion.add(output, eval_target)
 
@@ -93,6 +119,7 @@ def train(epoch, train_loader, learner, args):
     if args.loss=='CE':
         print('[Train] ACC: ', confusion.acc())
     elif args.loss in ['KCL','CCL']:
+        return
         args.cluster2Class = confusion.optimal_assignment(train_loader.num_classes)  # Save the mapping in args to use in eval
         if args.out_dim <= 20:  # Avoid to print a large confusion matrix
             confusion.show()
@@ -240,6 +267,7 @@ def run(args):
     KPI = 0
     for epoch in range(args.start_epoch, args.epochs):
         train(epoch, train_loader, learner, args)
+        return
         if eval_loader is not None and ((not args.skip_eval) or (epoch==args.epochs-1)):
             KPI = evaluate(eval_loader, model, args)
         # Save checkpoint at each LR steps and the end of optimization
