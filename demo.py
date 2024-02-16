@@ -134,7 +134,9 @@ def evaluate(eval_loader, model, args):
         print('[Test] ACC: ', KPI)
     elif args.loss in ['KCL', 'CCL']:
         confusion.optimal_assignment(eval_loader.num_classes, args.cluster2Class)
-        confusion.show()
+        if args.out_dim <= 20:  # Avoid to print a large confusion matrix   
+            confusion.show()
+            
         print("Confusion sns show")
         confusion.show_sns(args.dataset, fig_width =70, fig_height=50)
 

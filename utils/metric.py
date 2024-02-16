@@ -169,10 +169,10 @@ class Confusion(object):
         # plt.show()
         # instead of showing the figure we save it to a file in reslts folder named as {dataset}_confusion_matrix.png
           # Check if the directory exists and create it if it does not
-        if not os.path.exists('/results/'):
-            os.makedirs('/results/')
+        if not os.path.exists('results'):
+            os.makedirs('results')
         
-        plt.savefig("/results/" + dataset_path + "_confusion_matrix.png")
+        plt.savefig("results/" + dataset_path + "_confusion_matrix.png")
 
     def conf2label(self):
         conf=self.conf
