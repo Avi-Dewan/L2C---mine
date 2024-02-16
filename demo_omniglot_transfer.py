@@ -14,7 +14,7 @@ config = parser.parse_args()
 
 print('STEP1: Train SPN on Omniglot background set')
 if not os.path.isfile('outputs/Omniglot_VGGS_DPS.model.pth'):
-    argv = '--loss DPS --dataset Omniglot --model_type vgg --model_name VGGS --schedule 30 40 --epochs 10'.split(' ')
+    argv = '--loss DPS --dataset Omniglot --model_type vgg --model_name VGGS --schedule 30 40 --epochs 2'.split(' ')
     # print(get_args(argv))
     run(get_args(argv))
 print('STEP1: Done')
@@ -46,7 +46,7 @@ omniglot_evaluation_alphabet_set = [
 acc = {}
 for i,alphabet in enumerate(omniglot_evaluation_alphabet_set):
     print('STEP2 [%d/20]: Clustering on Omniglot evaluation alphabet %s'%(i+1,alphabet))
-    argv = '--gpuid %d --dataset Omniglot_eval_%s --model_type vgg --model_name VGGS --schedule 100 --epochs 10 --print_freq 0 --loss %s --out_dim %d --skip_eval --use_SPN'%(config.gpuid,alphabet,config.loss,config.num_cluster)
+    argv = '--gpuid %d --dataset Omniglot_eval_%s --model_type vgg --model_name VGGS --schedule 100 --epochs 2 --print_freq 0 --loss %s --out_dim %d --skip_eval --use_SPN'%(config.gpuid,alphabet,config.loss,config.num_cluster)
     argv = argv.split(' ')
     # print(get_args(argv))
     acc[alphabet] = run(get_args(argv))
