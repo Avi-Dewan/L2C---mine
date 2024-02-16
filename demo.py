@@ -136,8 +136,8 @@ def evaluate(eval_loader, model, args):
         confusion.optimal_assignment(eval_loader.num_classes, args.cluster2Class)
         if args.out_dim <= 20:  # Avoid to print a large confusion matrix   
             confusion.show()
-            
-        print("Confusion sns show")
+
+        # print("Confusion sns show")
         confusion.show_sns(args.dataset, fig_width =70, fig_height=50)
 
         print('Clustering scores:',confusion.clusterscores())
