@@ -267,7 +267,9 @@ def run(args):
     KPI = 0
     for epoch in range(args.start_epoch, args.epochs):
         train(epoch, train_loader, learner, args)
-        return
+
+        if(args.loss in ['KCL', 'CCL']):
+            break
         if eval_loader is not None and ((not args.skip_eval) or (epoch==args.epochs-1)):
             KPI = evaluate(eval_loader, model, args)
         # Save checkpoint at each LR steps and the end of optimization
