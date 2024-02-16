@@ -136,11 +136,13 @@ def evaluate(eval_loader, model, args):
         confusion.optimal_assignment(eval_loader.num_classes, args.cluster2Class)
         if args.out_dim<=20:
             confusion.show()
+        confusion.show_sns(fig_width =70, fig_height=50)
         print('Clustering scores:',confusion.clusterscores())
         KPI = confusion.acc()
         print('[Test] ACC: ', KPI)
     elif args.loss == 'DPS':
         confusion.show(width=15, row_labels=['GT_dis-simi', 'GT_simi'], column_labels=['Pred_dis-simi', 'Pred_simi'])
+        confusion.show_sns(fig_width=10, fig_height=8, row_labels=['GT_dis-simi','GT_simi'],column_labels=['Pred_dis-simi','Pred_simi'])
         KPI = confusion.f1score(1)
         print('[Test] similar pair f1-score:', KPI)  # f1-score for similar pair (label:1)
         print('[Test] dissimilar pair f1-score:', confusion.f1score(0))

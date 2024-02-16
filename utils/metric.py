@@ -3,7 +3,8 @@ import time
 import torch
 from scipy.optimize import linear_sum_assignment as hungarian
 from sklearn.metrics.cluster import normalized_mutual_info_score, adjusted_rand_score, adjusted_mutual_info_score
-
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -145,6 +146,25 @@ class Confusion(object):
                 print(("%"+str(width)+".d")%conf[i,j],end='')
             print('')
         
+    def show_sns(self, fig_width, fig_height, row_labels=None, column_labels=None):
+        """
+        Display the confusion matrix using Seaborn's heatmap.
+        """
+        conf = self.conf.numpy()  # Convert PyTorch tensor to NumPy array
+        
+        if row_labels is None:
+            row_labels = [str(i) for i in range(self.k)]
+        if column_labels is None:
+            column_labels = [str(i) for i in range(self.k)]
+        
+        plt.figure(figsize=(fig_width, fig_height))
+        sns.heatmap(conf, annot=True, fmt="d", cmap="Blues",
+                    xticklabels=column_labels, yticklabels=row_labels)
+        plt.xlabel("Predicted Label")
+        plt.ylabel("True Label")
+        plt.title("Confusion Matrix")
+        plt.show()
+
     def conf2label(self):
         conf=self.conf
         gt_classes_count=conf.sum(1).squeeze()
